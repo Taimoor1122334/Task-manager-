@@ -1,61 +1,104 @@
-import * as React from 'react';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useState } from 'react';
+import {
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  addMonths,
+  subMonths,
+  isSameMonth,
+  isSameDay,
+  format
+} from 'date-fns';
 
-export default function ResponsiveMuiCalendar() {
-  const [value, setValue] = React.useState(new Date());
+export default function PrettyCustomCalendar() {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // Fake events (map day in month -> array of colors for dots)
+
+
+  const renderHeader = () => (
+    <div className="flex justify-between items-center px-4 py-4">
+      <h2 className="text-xl font-bold text-gray-800">
+        {format(currentMonth, 'MMM yyyy')}
+      </h2>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+          className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600"
+        >
+          &lt;
+        </button>
+        <button
+          onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+          className="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-orange-600"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderDays = () => {
+    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    return (
+      <div className="grid grid-cols-7 gap-y-1 px-1 text-xs sm:text-sm font-medium text-gray-500">
+        {weekdays.map((day) => (
+          <div key={day} className="text-center">{day}</div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderCells = () => {
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
+    const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
+    const rows = [];
+    let days = [];
+    let day = startDate;
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        const cloneDay = day;
+        const dayNumber = day.getDate();
+        const isInMonth = isSameMonth(day, monthStart);
+        const isSelected = isSameDay(day, selectedDate);
+
+        days.push(
+          <div
+            key={day}
+            onClick={() => setSelectedDate(cloneDay)}
+            className={`flex flex-col items-center justify-center rounded-full aspect-square cursor-pointer transition-all duration-150
+              ${isSelected ? 'bg-orange-500 text-white' : 'hover:bg-orange-100'}
+              ${!isInMonth ? 'text-gray-300' : ''}
+            `}
+          >
+            <span className="text-xs sm:text-sm">{format(day, 'd')}</span>
+           
+          </div>
+        );
+        day = addDays(day, 1);
+      }
+      rows.push(
+        <div key={day} className="grid grid-cols-7 gap-y-1 px-1">
+          {days}
+        </div>
+      );
+      days = [];
+    }
+    return <div>{rows}</div>;
+  };
 
   return (
-    <div className="bg-white rounded-2xl  shadow-sm border border-gray-100 max-w-full sm:max-w-sm w-full">
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DateCalendar
-          value={value}
-          onChange={setValue}
-          views={['day']} // shows day-level calendar, like your original
-          sx={{
-            // optional: tweak size, font, colors with sx
-            '& .MuiPickersDay-root': {
-              fontSize: 'clamp(0.4rem, 1.6vw, 0.9rem)',
-              width: 'clamp(1.8rem,4vw,2.3rem)',
-              height: 'clamp(1.8rem,4vw,2.3rem)',
-              borderRadius: '50%',
-              transition: 'background 0.2s',
-            },
-            '& .Mui-selected': {
-              backgroundColor: '#FF6A1A !important', // Figma orange
-              color: '#fff !important',
-            },
-            '& .MuiPickersDay-root.Mui-selected:hover, & .MuiPickersDay-root.Mui-selected:focus': {
-              backgroundColor: '#FF6A1A !important',
-            },
-            '& .MuiPickersDay-root:not(.Mui-selected):hover': {
-              backgroundColor: '#FFF3E6', // light orange hover
-            },
-            '& .MuiPickersDay-today': {
-              border: '1.5px solid #FF6A1A',
-            },
-            '& .MuiPickersArrowSwitcher-button': {
-              backgroundColor: '#FF6A1A',
-              color: '#fff',
-              borderRadius: '50%',
-              width: 36,
-              height: 36,
-              margin: '0 1px',
-              transition: 'background 0.2s',
-              '&:hover': {
-                backgroundColor: '#e65c00',
-              },
-            },
-            '& .MuiPickersArrowSwitcher-button .MuiSvgIcon-root': {
-              color: '#fff',
-              fontSize: 22,
-            },
-          }}
-        />
-      </LocalizationProvider>
-
-    
+    <div className="bg-white pb-4 rounded-2xl overflow-hidden shadow-sm border border-gray-100 max-w-full sm:max-w-xs w-full">
+      {renderHeader()}
+      {renderDays()}
+      {renderCells()}
     </div>
   );
 }
