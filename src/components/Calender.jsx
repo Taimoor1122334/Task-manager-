@@ -16,7 +16,7 @@ export default function ResponsiveMuiCalendar() {
           sx={{
             // optional: tweak size, font, colors with sx
             '& .MuiPickersDay-root': {
-              fontSize: 'clamp(0.6rem, 1.6vw, 0.9rem)',
+              fontSize: 'clamp(0.4rem, 1.6vw, 0.9rem)',
               width: 'clamp(1.8rem,4vw,2.3rem)',
               height: 'clamp(1.8rem,4vw,2.3rem)',
               borderRadius: '50%',
