@@ -21,7 +21,7 @@ export default function PrettyCustomCalendar() {
 
   const renderHeader = () => (
     <div className="flex justify-between items-center px-4 py-4">
-      <h2 className="text-xl font-bold text-gray-800">
+      <h2 className="text-xl font-semibold text-gray-800">
         {format(currentMonth, 'MMM yyyy')}
       </h2>
       <div className="flex space-x-2">
@@ -44,7 +44,7 @@ export default function PrettyCustomCalendar() {
   const renderDays = () => {
     const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
     return (
-      <div className="grid grid-cols-7 gap-y-1 px-1 text-xs sm:text-sm font-medium text-gray-500">
+      <div className="grid grid-cols-7 gap-y-1 px-1 text-xs sm:text-sm font-medium ">
         {weekdays.map((day) => (
           <div key={day} className="text-center">{day}</div>
         ))}
