@@ -8,7 +8,7 @@ export default function Layout({ children }) {
         <Sidebar />
       </div>
       {/* Main Content */}
-      <div className="ml-64 flex flex-col min-h-screen bg-[#FAFAF9]">
+      <div className="lg:ml-64 flex flex-col min-h-screen bg-[#FAFAF9]">
         {children}
       </div>
     </>
